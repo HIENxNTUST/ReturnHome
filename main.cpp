@@ -9,7 +9,7 @@
 #define DEFAULT_INTERVAL 0.02
 #define DEFAULT_HIGH 3.0
 #define SAMPLING_RANGE 50
-#define FILE_PATH "home3.png"
+#define FILE_PATH "home.png"
 #define MIN_RANGE 20
 
 using namespace std;
@@ -62,7 +62,7 @@ void check(Mat &I, Way &W) {
                 W.horizontal--;
             else if(r < 50 && g < 50 && b > 128)
                 W.vertical++;
-            else if(r < 50 && g > 128 && b > 50)
+            else if(r < 50 && g > 128 && b < 50)
                 W.vertical--;
         }
     }
