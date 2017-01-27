@@ -6,11 +6,13 @@
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
 
-#define DEFAULT_INTERVAL 0.02
+#define DEFAULT_INTERVAL 0.01
 #define DEFAULT_HIGH 3.0
 #define SAMPLING_RANGE 50
 #define FILE_PATH "home.png"
-#define MIN_RANGE 20
+#define MIN_RANGE 50
+#define MIN_HIGH 1.0
+#define INTERVAL(interval, x)  interval * abs(x) / pow(SAMPLING_RANGE, 2)
 
 using namespace std;
 using namespace cv;
@@ -42,7 +44,6 @@ int main() {
     w.horizontal = 0;
     check(image, w);
     move(w, high);
-    cout << "vertical: " << w.vertical << ", horizontal: " << w.horizontal << endl;
     return 0;
 }
 
@@ -69,48 +70,50 @@ void check(Mat &I, Way &W) {
 }
 
 void move(const Way &W, double high) {
+    cout << "vertical " << W.vertical << " horizontal " << W.horizontal << endl;
+    cout << pow(SAMPLING_RANGE, 2) << endl;
     double interval = DEFAULT_INTERVAL;
     interval += high / 100;
     if(abs(W.vertical) < MIN_RANGE && abs(W.horizontal) < MIN_RANGE){
-        if(high < 1)
+        if(high < MIN_HIGH)
             landing();
         else
-            flyDown(1.0);
+            flyDown(MIN_HIGH);
     } else {
-        double dVer = interval * (double)abs(W.vertical) / pow(SAMPLING_RANGE, 2) * 2;
-        double dHor = interval * (double)abs(W.horizontal) / pow(SAMPLING_RANGE, 2) * 2;
-        if(W.vertical > 0)
+        double dVer = INTERVAL(interval, W.vertical);
+        double dHor = INTERVAL(interval, W.horizontal);
+        if(W.vertical > MIN_RANGE)
             flyFront(dVer);
-        else
+        else if(W.vertical < MIN_RANGE * -1)
             flyBack(dVer);
-        if(W.horizontal > 0)
+        if(W.horizontal > MIN_RANGE)
             flyRight(dHor);
-        else
+        else if(W.horizontal < MIN_RANGE * -1)
             flyLeft(dHor);
     }
 }
 
 //TODO:封裝在drone
 void landing() {
-
+    cout << "landing " << endl;
 }
 
 void flyDown(double distance) {
-
+    cout << "fly down " << distance << endl;
 }
 
 void flyFront(double distance) {
-
+    cout << "fly front " << distance << endl;
 }
 
 void flyBack(double distance) {
-
+    cout << "fly back " << distance << endl;
 }
 
 void flyRight(double distance) {
-
+    cout << "fly right " << distance << endl;
 }
 
 void flyLeft(double distance) {
-
+    cout << "fly doleftwn " << distance << endl;
 }
