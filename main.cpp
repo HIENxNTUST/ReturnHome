@@ -1,6 +1,4 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include <cmath>
 #include <cv.h>
 #include <highgui.h>
@@ -23,16 +21,21 @@ using namespace cv;
     they will be changed into parameters later.
 */
 int main() {
-    string path    = FILE_PATH;
-    double height  = DEFAULT_HEIGHT; 
-    Mat    image   = imread(path, CV_LOAD_IMAGE_UNCHANGED);
+    string path   = FILE_PATH;
+    double height = DEFAULT_HEIGHT;
+    double angle;
+    Mat    image;
     Way    w;
-
+    
+    image        = imread(path, CV_LOAD_IMAGE_UNCHANGED);
+    angle        = checkAngle(image);
     w.vertical   = 0;
     w.horizontal = 0;
 
-    check(image, w);
-    move(w, height);
-
+    if(!rotate(angle)) {
+        checkDistance(image, w);
+        move(w, height);
+    }
+    
     return 0;
 }

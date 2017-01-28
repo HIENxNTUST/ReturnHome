@@ -1,10 +1,11 @@
 #pragma once
 
-#define DISTANCE(distance, x) distance * abs(x) / pow(SAMPLING_RANGE, 2)
-#define DEFAULT_DISTANCE      0.01
+#define DISTANCE(distance, x) (distance) * abs(x) / pow(SAMPLING_RANGE, 2)
+#define DEFAULT_DISTANCE      0.1
 #define SAMPLING_RANGE        50
 #define MIN_HEIGHT            1.0
 #define MIN_RANGE             50
+
 
 using namespace std;
 using namespace cv;
@@ -15,7 +16,7 @@ void flyBack(double);
 void flyLeft(double);
 void flyDown(double);
 void landing();
-void check(Mat &, Way &);
+void checkDistance(Mat &, Way &);
 void move(const Way &, double);
 
 /*
@@ -25,7 +26,7 @@ void move(const Way &, double);
     I: The picture took by drone
     W: A class to record the distance of vertical and horizontal between the drone and home
 */
-void check(Mat &I, Way &W) {
+void checkDistance(Mat &I, Way &W) {
     int w  = I.cols;
     int h  = I.rows;
     int ox = w / 2; //The x coordinate of center point
@@ -44,10 +45,10 @@ void check(Mat &I, Way &W) {
             int b = I.at<Vec3b>(j, i)[0];
 
             //calculate the distance
-            if(     r > 200 && g > 200 && b < 50 ) W.horizontal++;
-            else if(r > 128 && g < 50  && b < 50 ) W.horizontal--;
-            else if(r < 50  && g < 50  && b > 128) W.vertical++;
-            else if(r < 50  && g > 128 && b < 50 ) W.vertical--;
+            if(IS_YELLOW(r, g, b))     W.horizontal++; //yellow
+            else if(IS_RED(r, g, b))   W.horizontal--; //red
+            else if(IS_BLUE(r, g, b))  W.vertical++;   //blue
+            else if(IS_GREEN(r, g, b)) W.vertical--;   //green
         }
     }
 }
@@ -62,7 +63,7 @@ void check(Mat &I, Way &W) {
 void move(const Way &W, double height) {
     double distance = DEFAULT_DISTANCE; //The reference value of flying distance
 
-    distance += height / 100;
+    distance += height / 10;
     
     if(abs(W.vertical) < MIN_RANGE && abs(W.horizontal) < MIN_RANGE){
         if(height < MIN_HEIGHT)
