@@ -6,7 +6,6 @@
 #define MIN_HEIGHT            1.0
 #define MIN_RANGE             50
 
-
 using namespace std;
 using namespace cv;
 
@@ -45,10 +44,10 @@ void checkDistance(Mat &I, Way &W) {
             int b = I.at<Vec3b>(j, i)[0];
 
             //calculate the distance
-            if(IS_YELLOW(r, g, b))     W.horizontal++; //yellow
-            else if(IS_RED(r, g, b))   W.horizontal--; //red
-            else if(IS_BLUE(r, g, b))  W.vertical++;   //blue
-            else if(IS_GREEN(r, g, b)) W.vertical--;   //green
+            if(IS_YELLOW(r, g, b))     W.horizontal++;
+            else if(IS_RED(r, g, b))   W.horizontal--;
+            else if(IS_BLUE(r, g, b))  W.vertical++;
+            else if(IS_GREEN(r, g, b)) W.vertical--;
         }
     }
 }
