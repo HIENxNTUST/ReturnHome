@@ -107,5 +107,5 @@ void flyRight(double distance) {
 }
 
 void flyLeft(double distance) {
-    cout << "fly doleftwn " << distance << endl;
+    cout << "fly left " << distance << endl;
 }

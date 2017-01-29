@@ -8,7 +8,7 @@
 #include "./Rotate.h"
 #include "./Move.h"
 
-#define FILE_PATH      "home.png"
+#define FILE_PATH      "home1.png"
 #define DEFAULT_HEIGHT 3.0
 
 using namespace std;
@@ -36,6 +36,6 @@ int main() {
         checkDistance(image, w);
         move(w, height);
     }
-    
+
     return 0;
 }

@@ -21,10 +21,8 @@ typedef vector<vector<Point>> vecPoint;
 
 double checkAngle(Mat &);
 double getAngle(Mat &, vector<Point> &);
-void   getPoint(vecPoint &);
 void   getSquare(vecPoint &, vector<Point> &);
 bool   rotate(double);
-
 
 /*
 *Author: blackkite0206233
@@ -34,46 +32,19 @@ bool   rotate(double);
 */
 double checkAngle(Mat &I) {
     vector<Point> square;
-    vecPoint      contours;
+    vecPoint      contours, filter;
     Mat           gray;
 
     cvtColor(I, gray, CV_BGR2GRAY);
     findContours(gray, contours, RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
-    getPoint(contours);
-    getSquare(contours, square);
+    filter.resize(contours.size());
+    for(int i = 0; i < contours.size(); i++)
+        approxPolyDP(Mat(contours[i]), filter[i], 3, true);
+    getSquare(filter, square);
 
+    if(square.size() == 0)
+         return 0;
     return getAngle(I, square);
-}
-
-/*
-*Author: blackkite0206233
-*Description: This function is used to filter the correct feature points
-*Usage: 
-    contours: A set with all the feature points made by findContours function
-*/
-void getPoint(vecPoint &contours) {
-
-    //Traveled all the feature points in the set
-    for(int i = 0; i < contours.size(); i++){
-        for(int j = 0; j < contours[i].size(); j++) {
-            int x1 = contours[i][j].x;
-            int y1 = contours[i][j].y;
-
-            /* 
-            * Compare a feature point with others, 
-            * if the distance between two points is less than the difference value, 
-            * then they can be considered the same point
-            */
-            for(int k = j + 1; k < contours[i].size(); k++) {
-                int x2 = contours[i][k].x;
-                int y2 = contours[i][k].y;
-                if(LENGTH(x1, x2, y1, y2) < MAX_DIFF_LEN) {
-                    contours[i].erase(contours[i].begin() + k);
-                    k--;
-                }
-            }
-        }
-    }
 }
 
 /*
@@ -137,8 +108,11 @@ double getAngle(Mat &I, vector<Point> &square) {
     int b = I.at<Vec3b>(qut.y, qut.x)[0];
 
     if(IS_RED(r, g, b))        angle += 180; 
-    else if(IS_BLUE(r, g, b))  angle -= 90;  
-    else if(IS_GREEN(r, g, b)) angle += 90;  
+    else if(IS_BLUE(r, g, b))  angle += 90;  
+    else if(IS_GREEN(r, g, b)) angle -= 90;  
+
+    if(angle > 180)  angle -= 360;
+    if(angle < -180) angle += 360;
 
     return angle;
 }
