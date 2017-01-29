@@ -9,14 +9,19 @@
 using namespace std;
 using namespace cv;
 
+typedef struct dir{
+    int vertical;
+    int horizontal;
+} Dir;
+
 void flyFront(double);
 void flyRight(double);
 void flyBack(double);
 void flyLeft(double);
 void flyDown(double);
 void landing();
-void checkDistance(Mat &, Way &);
-void move(const Way &, double);
+void checkDistance(Mat &, Dir &);
+void move(const Dir &, double);
 
 /*
 *Author: blackkite0206233
@@ -25,7 +30,7 @@ void move(const Way &, double);
     I: The picture took by drone
     W: A class to record the distance of vertical and horizontal between the drone and home
 */
-void checkDistance(Mat &I, Way &W) {
+void checkDistance(Mat &I, Dir &W) {
     int w  = I.cols;
     int h  = I.rows;
     int ox = w / 2; //The x coordinate of center point
@@ -59,7 +64,7 @@ void checkDistance(Mat &I, Way &W) {
     W: A class to record the distance of vertical and horizontal between the drone and home
     height: The height of drone
 */
-void move(const Way &W, double height) {
+void move(const Dir &W, double height) {
     double distance = DEFAULT_DISTANCE; //The reference value of flying distance
 
     distance += height / 10;

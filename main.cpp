@@ -4,11 +4,11 @@
 #include <highgui.h>
 #include <opencv2/opencv.hpp>
 
-#include "./Way.h"
+//#include "./Way.h"
 #include "./Rotate.h"
 #include "./Move.h"
 
-#define FILE_PATH      "home1.png"
+#define FILE_PATH      "home.png"
 #define DEFAULT_HEIGHT 3.0
 
 using namespace std;
@@ -25,16 +25,16 @@ int main() {
     double height = DEFAULT_HEIGHT;
     double angle;
     Mat    image;
-    Way    w;
+    Dir    d;
     
     image        = imread(path, CV_LOAD_IMAGE_UNCHANGED);
     angle        = checkAngle(image);
-    w.vertical   = 0;
-    w.horizontal = 0;
+    d.vertical   = 0;
+    d.horizontal = 0;
 
     if(!rotate(angle)) {
-        checkDistance(image, w);
-        move(w, height);
+        checkDistance(image, d);
+        move(d, height);
     }
 
     return 0;
